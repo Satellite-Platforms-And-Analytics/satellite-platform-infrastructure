@@ -262,21 +262,34 @@ ALTER TABLE imagery_scenes      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ingestion_log       ENABLE ROW LEVEL SECURITY;
 
 -- Public read policies (anon key can read these)
+--
+-- Each is preceded by DROP POLICY IF EXISTS so this file can be re-run.
+-- Added 2026-09-05: CREATE POLICY has no IF NOT EXISTS form, so without
+-- the drop, re-running 001 fails here — which means the schema directory
+-- could not rebuild the database it describes. That only matters the day
+-- it matters: a fresh project, a staging copy, a restore. 006 was written
+-- this way; 001 was not.
+DROP POLICY IF EXISTS "Public read countries" ON countries;
 CREATE POLICY "Public read countries"
     ON countries FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public read satellites" ON satellites;
 CREATE POLICY "Public read satellites"
     ON satellites FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public read orbital_positions" ON orbital_positions;
 CREATE POLICY "Public read orbital_positions"
     ON orbital_positions FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public read visibility_windows" ON visibility_windows;
 CREATE POLICY "Public read visibility_windows"
     ON visibility_windows FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public read sensors" ON sensors;
 CREATE POLICY "Public read sensors"
     ON sensors FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Public read imagery_scenes" ON imagery_scenes;
 CREATE POLICY "Public read imagery_scenes"
     ON imagery_scenes FOR SELECT USING (true);
 
