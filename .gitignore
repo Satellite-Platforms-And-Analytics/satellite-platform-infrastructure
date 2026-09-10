@@ -1,0 +1,33 @@
+# This repository had no .gitignore at all until 2026-09-10. It applies
+# schema migrations, so it is a repository that legitimately wants a
+# DATABASE_URL nearby - which makes an un-ignored .env here the most
+# expensive mistake available. Match the whole .env family; re-admit only
+# a checked-in template.
+.env*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editor and tool backups. apply_migration.py.bak was sitting untracked
+# here; a backup of a script that holds connection logic is not something
+# to commit by accident.
+*.bak
+*.orig
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
