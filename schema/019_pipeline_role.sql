@@ -78,6 +78,22 @@ COMMENT ON ROLE pipeline IS
 
 GRANT USAGE ON SCHEMA public TO pipeline;
 
+-- MEMBERSHIP, SO THE ROLE CAN BE VERIFIED BY BECOMING IT.
+--
+-- `SET ROLE pipeline` requires the caller to be a member of it, or a
+-- true superuser. Supabase's `postgres.<project>` is neither, so on
+-- 2026-09-15 `check_grants.py --role pipeline` reported "permission
+-- denied to set role" - the control could not run its own third layer,
+-- against the real database, while passing against a scratch one where
+-- the connection happened to be the owner.
+--
+-- This is a DOWNGRADE, not an escalation. The applying role already
+-- holds strictly more than `pipeline` does; membership only lets it put
+-- that power down for the length of a transaction, which is the entire
+-- point of AD-071: a grant is a claim about what should happen, and a
+-- query run AS the role is what does happen.
+GRANT pipeline TO CURRENT_USER;
+
 -- ── What it may write ────────────────────────────────────────────────
 
 GRANT SELECT, INSERT, UPDATE ON
