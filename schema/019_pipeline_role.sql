@@ -190,6 +190,14 @@ $$;
 -- easily miss one that did. Check the PRIVILEGE, not the statement's
 -- exit status.
 --
--- FOLLOW-UP, NOT DONE HERE: teach check_grants.py a --role flag so this
--- block becomes a control that can go red rather than a comment
--- somebody has to remember to run.
+-- AND IT IS A CONTROL, NOT A COMMENT. `check_grants.py --role pipeline`
+-- asserts this role's whole expected reach and exits non-zero on any
+-- difference. Its expected state is written in the checker, NOT parsed
+-- from this file: a checker that read the migration would agree with it
+-- by construction and could never catch a hand-made GRANT in the SQL
+-- editor, which is exactly how privilege creeps back.
+--
+-- Confirmed red against five ways that happens: a hand-made GRANT
+-- DELETE, a dropped write policy, write access on a seed-file table,
+-- BYPASSRLS on the role, and the silent one - a missing policy, where
+-- the probe reports "UPDATE affected 0 rows on a table holding 1".
